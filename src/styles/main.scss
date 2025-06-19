@@ -27,3 +27,25 @@ img {
 [hidden] {
     display: none;
 }
+
+
+/*Add all the base icons for using them with classes*/
+/*db_ is the prefix of all the classes linked with the projet*/
+[class*="db_icon_"]{
+  @include svgIcon();
+}
+
+.db_icon_dashboard::before {mask-image: url("../images/icons/space_dashboard.svg");}
+.db_icon_truck::before {mask-image: url("../images/icons/truck.svg");}
+.db_icon_close::before {mask-image: url("../images/icons/close.svg");}
+.db_icon_energy::before {mask-image: url("../images/icons/energy.svg");}
+.db_icon_history::before {mask-image: url("../images/icons/history.svg");}
+.db_icon_location::before {mask-image: url("../images/icons/location.svg");}
+.db_icon_low_battery::before {mask-image: url("../images/icons/low_battery.svg");}
+.db_icon_manage_accounts::before {mask-image: url("../images/icons/manage_accounts.svg");}
+.db_icon_moon::before {mask-image: url("../images/icons/moon.svg");}
+.db_icon_notifications::before {mask-image: url("../images/icons/notifications.svg");}
+.db_icon_search::before {mask-image: url("../images/icons/search.svg");}
+.db_icon_stats::before {mask-image: url("../images/icons/stats.svg");}
+.db_icon_sun::before {mask-image: url("../images/icons/sun.svg");}
+.db_icon_chevron_bottom::before {mask-image: url("../images/icons/chevron_bottom.svg");}

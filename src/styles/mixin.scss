@@ -45,6 +45,44 @@
     }
 }
 
+/*Mixin : Add Icons Default configuration*/
+@mixin svgIcon($position: before) {
+    &::#{$position} {
+        content: '';
+        vertical-align: middle;
+        display: inline-block;
+        mask-position: center;
+        mask-repeat: no-repeat;
+        @include rem(mask-size, 16);
+        @include rem(width, 16);
+        @include rem(height, 16);
+        background: #000;
+    }
+}
+
+/*Mixin : Change or place a new icon image*/
+@mixin svgImage($image, $position:before) {
+    &::#{$position} {
+        mask-image: url("../images/icons/#{$image}.svg");
+    }
+}
+
+/*Mixin : Change icon size*/
+@mixin svgSize($size, $position:before){
+    &::#{$position}{
+        @include rem(mask-size, $size);
+        @include rem(width, $size);
+        @include rem(height, $size);
+    }
+}
+
+/*Mixin : Change icon color*/
+@mixin svgColor($color, $position:before){
+    &:#{$position}{
+        background: $color;
+    }
+}
+
 /* Load Fonts : Poppins (400, 500, 600)*/
 @font-face {
     font-family: 'Poppins';
