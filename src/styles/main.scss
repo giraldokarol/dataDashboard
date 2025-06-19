@@ -1,0 +1,28 @@
+@import './mixin.scss';
+@import './config.scss';
+
+*, :after, :before {
+    box-sizing: border-box;
+}
+
+p {
+    @include rem(margin, 8 0);
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    margin: 0;
+}
+
+img {
+    border-style: none;
+}
+
+[hidden] {
+    display: none;
+}

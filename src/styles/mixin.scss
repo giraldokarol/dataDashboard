@@ -1,0 +1,46 @@
+@use "sass:meta";
+@use "sass:math";
+@use "sass:list";
+
+/* Mixin : Px to rem */
+@function pxToRem($value){
+    $base_value: 16;
+    $list_values:();
+
+    @if meta.type-of($value) == "list" {
+        @each $val in $value {
+            @if math.unit($val) != "%" and math.floor($val) == $val {
+                $value_rem: math.div($val, $base_value);
+                $list_values: list.append($list_values, $value_rem);
+                
+            } @else {
+                @error "Error: The value #{$val}  is not a valid number.";
+            }
+        }
+        @return $list_values;
+        
+    } @else {
+        @if math.floor($value) == $value and math.unit($value) != "%" {
+            $new_value_rem: math.div($value, $base_value);
+            @return $new_value_rem;
+        }
+    }
+}
+
+/*Mixin : Rule + simple value without units for simplify the process*/
+@mixin rem($rule, $value){
+    @if $rule != "" {
+        $rem_value: pxToRem($value);
+
+        @if meta.type-of($rem_value) == "list"{
+            $values:();
+            @each $val in $rem_value {
+                $values: list.append($values, #{$val}rem);
+            }
+            #{$rule}: $values;
+
+        }@else{
+            #{$rule}: #{$rem_value}rem;
+        }
+    }
+}
