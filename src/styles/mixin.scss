@@ -44,3 +44,23 @@
         }
     }
 }
+
+/* Load Fonts : Poppins (400, 500, 600)*/
+@font-face {
+    font-family: 'Poppins';
+    src: url('@/assets/fonts/Poppins-Regular.woff2') format('woff2');
+    font-weight: 400; // Rango de pesos
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('@/assets/fonts/Poppins-Medium.woff2') format('woff2');
+    font-weight: 500; // Rango de pesos
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('@/assets/fonts/Poppins-Bold.woff2') format('woff2');
+    font-weight: 600; // Rango de pesos
+    font-style: normal;
+}
