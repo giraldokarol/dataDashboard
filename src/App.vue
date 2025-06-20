@@ -7,10 +7,18 @@ import Map from './components/Map.vue';
 import Menu from './components/Menu.vue';
 import SeachBar from './components/SeachBar.vue';
 import Notification from './components/Notification.vue';
+import PanelLocation from './components/PanelLocation.vue';
 
 //Data Map
-const realTimePosition = ref<[number, number]>([0, 0]);
-const truckInfo = ref<{plate:string, model:string, battery:number} | null>(null);
+const truckInfo = ref([{ position: [0, 0], plate: "", model: "", battery: 0 }]);
+const showDetails = ref<boolean>(false);
+const vehicleSelected = ref<string>("")
+
+function handleSeeDetails(plate:string){
+    showDetails.value = true;
+    vehicleSelected.value = plate;
+}
+function handleCloseDetails(){showDetails.value = false}
 
 //Notifications
 const isOpen = ref<boolean>(false);
@@ -26,12 +34,14 @@ function openHandling(){
 onMounted(async ()=>{
     const dataVehicule = await vehicleService.getVehicule("FRS850");
     if(dataVehicule.location && dataVehicule.licensePlate && dataVehicule.battery && dataVehicule.model){
-        realTimePosition.value = [dataVehicule.location.lat?? 0, dataVehicule.location.lng?? 0];
-        truckInfo.value = {
-            plate: dataVehicule.licensePlate,
-            model: dataVehicule.model,
-            battery: dataVehicule.battery.level?? 0
-        }
+        truckInfo.value = [
+            {
+                position: [dataVehicule.location.lat?? 0, dataVehicule.location.lng?? 0],
+                plate: dataVehicule.licensePlate,
+                model: dataVehicule.model,
+                battery: dataVehicule.battery.level?? 0
+            }
+        ]
     }
 });
 </script>
@@ -56,7 +66,8 @@ onMounted(async ()=>{
                 </div>
             </header>
             <main role="main" class="db_map_layout">
-                <Map :center="realTimePosition" :truckInfo="truckInfo"></Map>
+                <PanelLocation v-if="showDetails" @closePanel="handleCloseDetails" :idTruck="vehicleSelected"></PanelLocation>
+                <Map :truckInfo="truckInfo" @seeDetails="handleSeeDetails"></Map>
             </main>
         </div>
     </div>

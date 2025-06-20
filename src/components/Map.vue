@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 //Library
 import L from 'leaflet';
 import { LMap, LTileLayer, LMarker } from '@vue-leaflet/vue-leaflet';
@@ -7,45 +7,48 @@ import { LMap, LTileLayer, LMarker } from '@vue-leaflet/vue-leaflet';
 //Variables
 const props = withDefaults(
     defineProps<{
-        center?: any;
         zoom?: number;
         truckInfo?: any;
     }>(),{
-        center: [0, 0] as [number, number],
         zoom: 30,
-        truckInfo: {
-            plate: "",
-            model: "",
-            battery: 0
-        }
+        truckInfo: [
+            {
+                position: [0,0],
+                plate: "",
+                model: "",
+                battery: 0
+            },
+        ]
     }
 );
 
 //Custom Map
+const emit = defineEmits<{(e: 'seeDetails', plate: string):void}>();
 const isMarkerOpen = ref<boolean>(false);
-const marker = computed(() =>{
+
+function createMarkers(truck : any){
     return L.divIcon({
     html: isMarkerOpen.value
      ? `<div class="db_marker_real_position open" aria-expanded="${isMarkerOpen.value}">
-            <a role="button" aria-label="Reduce the text" class="db_marker_real_position_close_btn" id="db_closeInfo">
+            <a role="button" aria-label="Reduce the text" class="db_marker_real_position_close_btn">
                 <span aria-hidden=true class="db_icon_close"><span>
             </a>
             <div class="db_marker_real_position_title">
                 <span aria-hidden="true" class="db_icon_truck db_marker_real_position_title_icon"></span>
-                <p class="db_marker_real_position_title_plate">${props.truckInfo.plate}</p>
+                <p class="db_marker_real_position_title_plate">${truck.plate}</p>
             </div>
-            <p class="db_marker_real_position_subtitle">${props.truckInfo.model}</p>
+            <p class="db_marker_real_position_subtitle">${truck.model}</p>
             <div class="db_marker_real_position_battery">
-                <p class="db_marker_real_position_battery_level">${props.truckInfo.battery}</p>
+                <p class="db_marker_real_position_battery_level">${truck.battery}</p>
                 <span aria-hidden="true" class="db_icon_low_battery"></span>
             </div>
-            <a id="db_openDetail" class="db_marker_real_position_link" role="button">More details</a>
+            <a data-plate="${truck.plate}" class="db_marker_real_position_link" role="button">More details</a>
         <div>`
      :`<div class="db_marker_real_position" aria-expanded="${isMarkerOpen.value}"> <span aria-hidden="true" class="db_icon_truck"></div>`,
     className: "",
     iconSize: [20, 20],
     }) as any;
-});
+}
 
 function onMapReady(leafletMap: L.Map) {
   leafletMap.zoomControl.remove();
@@ -62,32 +65,39 @@ onMounted(()=> {
     watch(isMarkerOpen, () => {
         //SetTimeOut for being sure that the elements are alredy on the DOM
         setTimeout(() =>{
-            const closeBtn = document.getElementById('db_closeInfo');
-            const seeDetail = document.getElementById('db_openDetail');
+            const markerOpen = document.querySelector(".db_marker_real_position.open");
 
-            if(closeBtn){
-                closeBtn.addEventListener('click', function(){
-                    isMarkerOpen.value = false;
-                });
-            }
+            if(markerOpen) {
+                const closeBtn = document.querySelector('.db_marker_real_position_close_btn');
+                const seeDetail = document.querySelector('.db_marker_real_position_link');
 
-            if(seeDetail){
-                seeDetail.addEventListener('click', function(){
-                    console.log("For now : Click in details")
-                });
+                if(closeBtn){
+                    closeBtn.addEventListener('click', function(){
+                        isMarkerOpen.value = false;
+                    });
+                }
+
+                if(seeDetail){
+                    seeDetail.addEventListener('click', function(){
+                        const plate = seeDetail.getAttribute('data-plate');
+                        const e = (plate ?? "").replace(/\s/g, "");
+                        emit('seeDetails', e);
+                    });
+                }
             }
+            
         });
     });
 });
 </script>
 
 <template>
-  <LMap @ready="onMapReady" :zoom="props.zoom" :center="props.center" style="height: 100vh; width: 100%;">
+  <LMap @ready="onMapReady" :zoom="props.zoom" :center="props.truckInfo?.[0]?.position ?? [0, 0]" style="height: 100vh; width: 100%;">
     <LTileLayer
        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
        attribution='&copy; <a href="https://carto.com/">CARTO</a>'
     />
-    <LMarker @click="openMarker" :lat-lng="props.center" :icon="marker"/>
+    <LMarker v-for="truck in props.truckInfo" @click="openMarker" :lat-lng="truck.position" :icon="createMarkers(truck)"/>
   </LMap>
 </template>
 
