@@ -48,6 +48,13 @@ const emitIsActive = defineEmits(['selected']);
             @include svgSize(20);
             @include svgColor($gray);
         }
+
+        &:hover {
+            background: $lightgray2;
+            [class*='db_icon']{
+                @include svgColor($body_color);
+            }
+        }
     }
 
     &.selected {
