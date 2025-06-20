@@ -5,6 +5,7 @@ import { vehicleService } from './services/vehicleService';
 //Components
 import Map from './components/Map.vue';
 import Menu from './components/Menu.vue';
+import SeachBar from './components/SeachBar.vue';
 
 //Data Map
 const realTimePosition = ref<[number, number]>([0, 0]);
@@ -30,10 +31,25 @@ onMounted(async ()=>{
         </aside>
 
         <div class="db_maincontent">
-            <header class="db_topbar"></header>
+            <header class="db_topbar">
+                <SeachBar></SeachBar>
+            </header>
             <main role="main" class="db_map_layout">
                 <Map :center="realTimePosition" :truckInfo="truckInfo"></Map>
             </main>
         </div>
     </div>
 </template>
+
+<style scoped lang="scss">
+.db_maincontent {
+    @include rem(margin-left, 100);
+}
+
+.db_topbar {
+    position: fixed;
+    right: 0;
+    z-index: 1000;
+    @include rem(padding, 48 40 0 0);
+}
+</style>

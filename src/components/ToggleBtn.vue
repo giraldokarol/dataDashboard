@@ -22,7 +22,7 @@ const props = withDefaults(
 <template>
     <div class="db_toggle" :class="{'checked' : props.isChecked}">
         <label class="db_toggle_label" >
-            <input type="checkbox" class="db_toggle_checkbox" :aria-checked="props.isChecked ? true : false" :checked="props.isChecked"  @click.prevent="emitChecked('checkedToggle')" role="switch">
+            <input id="db_toggle_btn" type="checkbox" class="db_toggle_checkbox" :aria-checked="props.isChecked ? true : false" :checked="props.isChecked"  @click.prevent="emitChecked('checkedToggle')" role="switch">
             <span class="db_toggle_cursor"></span>
             <span v-if="props.iconSelected !== '' || props.iconDefault !== ''" class="db_toggle_icon" aria-hidden="true">
                     <span :class="props.iconDefault" class="db_toggle_icon_default"></span>

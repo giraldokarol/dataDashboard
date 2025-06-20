@@ -215,6 +215,7 @@ onMounted(()=> {
         &-attribution { display: none;}
         &-zoom.leaflet-bar {
             border: 0 !important;
+            @include rem(margin, 0 40 40 0);
             a {
                 border: 0;
                 background: $lightgray2;
@@ -234,11 +235,5 @@ onMounted(()=> {
             }
         }
     }
-}
-
-.leaflet-control {
-    
-
-    
 }
 </style>
