@@ -98,7 +98,7 @@ onMounted(()=> {
     align-items: center;
     justify-content: center;
     background: $db_marker_pos_background;
-    bottom: calc( #{$db_marker_pos_default_size}px - 25px);
+    bottom: calc( #{$db_marker_pos_default_size}px - 20px);
     left: 50%;
     transform: translateX(-50%);
     @include rem(border-radius, $default_borderraidus);
@@ -111,8 +111,16 @@ onMounted(()=> {
     }
 
     &::before {
-        content: "jla";
+        content: "";
         position: absolute;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width:  #{pxToRem(9)}rem;
+        border-color:  $db_marker_pos_background transparent  transparent transparent;
+        @include rem(bottom, -14);
+        left: 50%;
+        transform: translateX(-50%);
     }
 
 
@@ -186,6 +194,16 @@ onMounted(()=> {
     width: #{pxToRem($db_marker_pos_indicator_size)}rem !important;
     height: #{pxToRem($db_marker_pos_indicator_size)}rem !important;
     @include rem(border-radius, 50);
+    &::before {
+        content: "";
+        position: absolute;
+        top: 50%;left: 50%;
+        transform: translate(-50%, -50%);
+        background: #00000039;
+        @include rem(border-radius, 50);
+        width: calc(#{pxToRem($db_marker_pos_indicator_size)}px + 15px);
+        height: calc(#{pxToRem($db_marker_pos_indicator_size)}px + 15px);
+    }
 }
 
 .leaflet-container {
