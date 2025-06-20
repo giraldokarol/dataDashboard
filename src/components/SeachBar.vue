@@ -30,6 +30,7 @@
         background: $offwhite;
         border: #{pxToRem(1)}rem solid $gray2;
         width: 100%;
+        font-family: $font_family;
 
         &:focus{
             outline: #{pxToRem(2)}rem solid $black;
