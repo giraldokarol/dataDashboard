@@ -7,15 +7,21 @@ import Map from './components/Map.vue';
 
 //Data Map
 const realTimePosition = ref<[number, number]>([0, 0]);
+const truckInfo = ref<{plate:string, model:string, battery:number} | null>(null);
 
 onMounted(async ()=>{
-    const dataRealLocation = await vehicleService.getLocation("FRS850");
-    if(dataRealLocation.location){
-        realTimePosition.value = [dataRealLocation.location.lat?? 0, dataRealLocation.location.lng?? 0];
+    const dataVehicule = await vehicleService.getVehicule("FRS850");
+    if(dataVehicule.location && dataVehicule.licensePlate && dataVehicule.battery && dataVehicule.model){
+        realTimePosition.value = [dataVehicule.location.lat?? 0, dataVehicule.location.lng?? 0];
+        truckInfo.value = {
+            plate: dataVehicule.licensePlate,
+            model: dataVehicule.model,
+            battery: dataVehicule.battery.level?? 0
+        }
     }
 });
 </script>
 
 <template>
-    <Map :center="realTimePosition"></Map>
+    <Map :center="realTimePosition" :truckInfo="truckInfo"></Map>
 </template>
