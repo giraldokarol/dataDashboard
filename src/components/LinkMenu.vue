@@ -1,34 +1,26 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
-const isSelected = ref<boolean>(false);
 const props = withDefaults(
     defineProps<{
         iconClass?: string,
         text?: string,
         route?: string,
+        isActive?:boolean
     }>(),
     {
-        isSelected: false,
         iconClass: 'db_icon_dashboard',
         text: 'Dashboard Page',
-        route: '#'
+        route: '#',
+        isActive: false
     }
 );
 
 //Selected
-function clickOnIt(){
-    if(!isSelected.value){
-        isSelected.value = true;
-    }else {
-        isSelected.value = false;
-    }
-}
+const emitIsActive = defineEmits(['selected']);
 </script>
 
 <template>
-    <li class="db_menu_item" :class="{'selected' : isSelected}">
-        <a :href="props.route" role="button" class="db_menu_item_link" @click="clickOnIt">
+    <li class="db_menu_item" :class="{'selected' : props.isActive}">
+        <a :href="props.route" role="button" class="db_menu_item_link" @click.prevent="emitIsActive('selected')">
             <span aria-hidden="true" :class="props.iconClass"></span>
             <span class="sr_only db_menu_item_link_text">{{ props.text }}</span>
         </a>

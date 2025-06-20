@@ -206,31 +206,39 @@ onMounted(()=> {
     }
 }
 
-.leaflet-container {
-    font-family: $font_family;
-}
-.leaflet-control {
-    &-attribution { display: none;}
+.leaflet {
+    &-container{
+        font-family: $font_family;
+    }
 
-    &-zoom.leaflet-bar {
-        border: 0 !important;
-        a {
-            border: 0;
-            background: $lightgray2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: $body_color;
-            box-shadow: 0 0 #{pxToRem(16)}rem #{pxToRem(-2)}rem #00000039;
-            @include rem(font-size, 18);
-            @include rem(width, 38);
-            @include rem(height, 38);
-            @include rem(margin-top, 12);
-            @include rem(border-radius, 50);
-            &:first-child, &:last-child {
+    &-control{
+        &-attribution { display: none;}
+        &-zoom.leaflet-bar {
+            border: 0 !important;
+            a {
+                border: 0;
+                background: $lightgray2;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: $body_color;
+                box-shadow: 0 0 #{pxToRem(16)}rem #{pxToRem(-2)}rem #00000039;
+                @include rem(font-size, 18);
+                @include rem(width, 38);
+                @include rem(height, 38);
+                @include rem(margin-top, 12);
                 @include rem(border-radius, 50);
+                &:first-child, &:last-child {
+                    @include rem(border-radius, 50);
+                }
             }
         }
     }
+}
+
+.leaflet-control {
+    
+
+    
 }
 </style>

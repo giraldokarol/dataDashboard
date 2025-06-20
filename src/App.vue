@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue';
 import { vehicleService } from './services/vehicleService';
 //Components
 import Map from './components/Map.vue';
+import Menu from './components/Menu.vue';
 
 //Data Map
 const realTimePosition = ref<[number, number]>([0, 0]);
@@ -23,5 +24,16 @@ onMounted(async ()=>{
 </script>
 
 <template>
-    <Map :center="realTimePosition" :truckInfo="truckInfo"></Map>
+    <div class="db_layout">
+        <aside class="db_sidebar">
+            <Menu></Menu>
+        </aside>
+
+        <div class="db_maincontent">
+            <header class="db_topbar"></header>
+            <main role="main" class="db_map_layout">
+                <Map :center="realTimePosition" :truckInfo="truckInfo"></Map>
+            </main>
+        </div>
+    </div>
 </template>
