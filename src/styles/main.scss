@@ -28,6 +28,13 @@ img {
     display: none;
 }
 
+.sr_only {
+    position: absolute;
+    overflow: hidden;
+    opacity: 0;
+    top: -10000px;
+}
+
 
 /*Add all the base icons for using them with classes*/
 /*db_ is the prefix of all the classes linked with the projet*/
