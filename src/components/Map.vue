@@ -1,32 +1,41 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 //Library
 import L from 'leaflet';
 import { LMap, LTileLayer, LMarker } from '@vue-leaflet/vue-leaflet';
 
 //Variables
-const props = withDefaults(
-    defineProps<{
-        zoom?: number;
-        truckInfo?: any;
-    }>(),{
-        zoom: 30,
-        truckInfo: [
-            {
-                position: [0,0],
-                plate: "",
-                model: "",
-                battery: 0
-            },
-        ]
-    }
-);
+const props = defineProps<{
+  zoom: number, 
+  truckInfo: Array<{
+    location: [number, number], 
+    licensePlate: string, 
+    model: string, 
+    battery: number,
+    driver:string,
+    speed:number
+  }>
+}>();
 
 //Custom Map
-const emit = defineEmits<{(e: 'seeDetails', plate: string):void}>();
+const hasTrucks = computed(() => props.truckInfo.length > 0)
 const isMarkerOpen = ref<boolean>(false);
+const selectedTruck = ref<any | null>(null);
+const emit = defineEmits<{(e: 'seeDetails', truck: any):void}>();
 
-function createMarkers(truck : any){
+function onMapReady(leafletMap: L.Map) {
+  leafletMap.zoomControl.remove();
+  L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
+}
+
+function openMarker(truck: any){
+    if(!isMarkerOpen.value){
+        isMarkerOpen.value = true;
+        selectedTruck.value = truck;
+    }
+}
+
+function createMarkers(truck: any){
     return L.divIcon({
     html: isMarkerOpen.value
      ? `<div class="db_marker_real_position open" aria-expanded="${isMarkerOpen.value}">
@@ -35,30 +44,19 @@ function createMarkers(truck : any){
             </a>
             <div class="db_marker_real_position_title">
                 <span aria-hidden="true" class="db_icon_truck db_marker_real_position_title_icon"></span>
-                <p class="db_marker_real_position_title_plate">${truck.plate}</p>
+                <p class="db_marker_real_position_title_plate">${truck.licensePlate}</p>
             </div>
             <p class="db_marker_real_position_subtitle">${truck.model}</p>
             <div class="db_marker_real_position_battery">
                 <p class="db_marker_real_position_battery_level">${truck.battery}</p>
                 <span aria-hidden="true" class="db_icon_low_battery"></span>
             </div>
-            <a data-plate="${truck.plate}" class="db_marker_real_position_link" role="button">More details</a>
+            <a data-plate="${truck.licensePlate}" class="db_marker_real_position_link" role="button">More details</a>
         <div>`
      :`<div class="db_marker_real_position" aria-expanded="${isMarkerOpen.value}"> <span aria-hidden="true" class="db_icon_truck"></div>`,
     className: "",
     iconSize: [20, 20],
     }) as any;
-}
-
-function onMapReady(leafletMap: L.Map) {
-  leafletMap.zoomControl.remove();
-  L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
-}
-
-function openMarker(){
-    if(!isMarkerOpen.value){
-        isMarkerOpen.value = true;
-    }
 }
 
 onMounted(()=> {
@@ -79,9 +77,7 @@ onMounted(()=> {
 
                 if(seeDetail){
                     seeDetail.addEventListener('click', function(){
-                        const plate = seeDetail.getAttribute('data-plate');
-                        const e = (plate ?? "").replace(/\s/g, "");
-                        emit('seeDetails', e);
+                        emit('seeDetails', selectedTruck.value);
                     });
                 }
             }
@@ -92,13 +88,10 @@ onMounted(()=> {
 </script>
 
 <template>
-  <LMap @ready="onMapReady" :zoom="props.zoom" :center="props.truckInfo?.[0]?.position ?? [0, 0]" style="height: 100vh; width: 100%;">
-    <LTileLayer
-       url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-       attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-    />
-    <LMarker v-for="truck in props.truckInfo" @click="openMarker" :lat-lng="truck.position" :icon="createMarkers(truck)"/>
-  </LMap>
+    <LMap  v-if="hasTrucks" @ready="onMapReady" :zoom="props.zoom" :center="props.truckInfo[0].location" style="height: 100vh; width: 100%;">
+        <LTileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution='&copy; <a href="https://carto.com/">CARTO</a>'/>
+        <LMarker v-for="truck in props.truckInfo" @click="openMarker(truck)" :lat-lng="truck.location" :icon="createMarkers(truck)"/>
+    </LMap>
 </template>
 
 <style lang="scss">

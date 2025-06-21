@@ -5,5 +5,5 @@ export class Route {
     public vehicleId?:string;
     public status?: string;
     public currentStopIndex?: number;
-    public stops?: Stop;
+    public stops?: Stop[];
 }

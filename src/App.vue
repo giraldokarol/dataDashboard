@@ -10,19 +10,37 @@ import Notification from './components/Notification.vue';
 import PanelLocation from './components/PanelLocation.vue';
 
 //Data Map
-const truckInfo = ref([{ position: [0, 0], plate: "", model: "", battery: 0 }]);
+const isMapReady = ref<boolean>(false);
+const truckInfo = ref<Array<{ location: [number, number], licensePlate: string, model: string, battery: number, driver:string, speed:number}>>([]);
 const showDetails = ref<boolean>(false);
-const vehicleSelected = ref<string>("")
+const vehicleSelected = ref<any>()
 
-function handleSeeDetails(plate:string){
+onMounted(async ()=>{
+    const dataVehicule = await vehicleService.getVehicule("FRS850");
+    if(dataVehicule.location && dataVehicule.licensePlate && dataVehicule.battery && dataVehicule.model && dataVehicule.driver && dataVehicule.speed){
+        truckInfo.value = [
+            {
+                location: [dataVehicule.location.lat ?? 0, dataVehicule.location.lng ?? 0],
+                licensePlate: dataVehicule.licensePlate,
+                model: dataVehicule.model,
+                battery: dataVehicule.battery.level?? 0,
+                driver: dataVehicule.driver.name ?? "",
+                speed: dataVehicule.speed ?? 0
+            }
+        ]
+        isMapReady.value = true;     
+    }
+});
+
+function handleSeeDetails(truck:any){
     showDetails.value = true;
-    vehicleSelected.value = plate;
+    vehicleSelected.value = truck;
 }
+
 function handleCloseDetails(){showDetails.value = false}
 
 //Notifications
 const isOpen = ref<boolean>(false);
-
 function openHandling(){
     if(!isOpen.value) {
         isOpen.value = true
@@ -31,19 +49,6 @@ function openHandling(){
     }
 }
 
-onMounted(async ()=>{
-    const dataVehicule = await vehicleService.getVehicule("FRS850");
-    if(dataVehicule.location && dataVehicule.licensePlate && dataVehicule.battery && dataVehicule.model){
-        truckInfo.value = [
-            {
-                position: [dataVehicule.location.lat?? 0, dataVehicule.location.lng?? 0],
-                plate: dataVehicule.licensePlate,
-                model: dataVehicule.model,
-                battery: dataVehicule.battery.level?? 0
-            }
-        ]
-    }
-});
 </script>
 
 <template>
@@ -66,8 +71,8 @@ onMounted(async ()=>{
                 </div>
             </header>
             <main role="main" class="db_map_layout">
-                <PanelLocation v-if="showDetails" @closePanel="handleCloseDetails" :idTruck="vehicleSelected"></PanelLocation>
-                <Map :truckInfo="truckInfo" @seeDetails="handleSeeDetails"></Map>
+                <PanelLocation v-if="showDetails && vehicleSelected" @closePanel="handleCloseDetails" :truck="vehicleSelected"></PanelLocation>
+                <Map v-if="isMapReady" :truckInfo="truckInfo" :zoom="30" @seeDetails="handleSeeDetails"></Map>
             </main>
         </div>
     </div>
