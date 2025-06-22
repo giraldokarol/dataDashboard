@@ -1,5 +1,5 @@
-# Vue 3 + TypeScript + Vite
+# Dashboard Truck Tracking (Mock)
+This mini-project is a quick and practical exercise where I integrated a simple truck tracking interface (see screenshot below). The main goal was to connect a clean Vue.js front-end with an API mock generated using SwaggerHub.  
+The idea behind this small app is to showcase how to set up HTTP requests, handle mock data, and structure a front-end project in a straightforward and efficient way. 
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+	![interface to integrate](interface.png)
