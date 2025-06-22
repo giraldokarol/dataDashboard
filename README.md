@@ -66,7 +66,7 @@ src/
 
 ## :page_with_curl: Instalation
 ```bash
-git clone 
+git clone https://github.com/giraldokarol/dataDashboard.git
 npm install
 npm run dev
 ```
